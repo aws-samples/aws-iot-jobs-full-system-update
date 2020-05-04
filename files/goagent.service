@@ -1,0 +1,14 @@
+[Unit]
+Description=AWS IoT Job agent with Mender integration
+After=network.target systemd-timesyncd.service
+
+[Service]
+Type=simple
+User=root
+Group=root
+ExecStart=/usr/sbin/goagent -cacert /etc/goagent/rootCA.pem -key /etc/goagent/private.key -cert /etc/goagent/cert.pem -endpoint acwprzq1nws9h-ats.iot.eu-west-1.amazonaws.com -thingName mender_demo_rpi -clientId mender_demo_rpi
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target
