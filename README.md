@@ -96,16 +96,14 @@ Use the `~/environment` folder as your working dir and follow the instruction in
 
 NOTE: if you get a warning about `Could not get lock...`, wait another 60sec os so. There are some background scripts finalizing the configuration of the AWS Cloud9 instance.
 
+### Obtaining and building the goagent 
 
-
-### Build the goagent 
-
-To build the goagent, run
+To build the `goagent` run:
 
 ```bash
-cd ~/environment/mender-convert/files/
-go get github.com/aws-samples/goagent
-GOOS=linux GOARCH=arm GOARM=7 go build github.com/aws-samples/goagent
+git clone https://github.com/aws-samples/aws-iot-jobs-full-system-update
+cd files
+env GOOS=linux GOARCH=arm GOARM=7 go build ../goagent.go 
 ```
 
 ### Copy configuration files
@@ -114,21 +112,18 @@ You need to copy some additional files to the `mender-convert/files` directory w
 
 ```bash
 cd ~/environment/mender-convert/files
-cp ~/go/src/gihub.com/goagent/files/* .
+cp ~/environment/aws-iot-jobs-full-system-update/files/* .
 ```
 
-You must also download the Raspian image. 
+### Raspbian
+
+Download the Raspbian image and extract it:
 
 ```bash
 cd ..
 mkdir -p input
 cd input
 wget http://downloads.raspberrypi.org/raspbian_lite/images/raspbian_lite-2019-04-09/2019-04-08-raspbian-stretch-lite.zip
-```
-
-And extract it:
-
-```bash
 unzip raspbian_lite-2019-04-09/2019-04-08-raspbian-stretch-lite.zip
 ```
 
