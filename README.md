@@ -25,7 +25,7 @@ In order to build and run this demo, you need the following:
 * An SD card with at least 8Gb of space
 * A computer with an SD Card reader
 * The [Etcher](https://www.balena.io/etcher/) tool to write the image to the SD Card. Any other tool you are familiar with would also do, including `dd`. 
-* The [Golang tools](https://golang.org/dl/) for the platform on which you will develop. If you are using AWS Cloud9, Golang tools are already installed.
+* The [Golang tools](https://golang.org/dl/) for the platform on which you will develop. Ensure you have go version 1.12 or above (`go version`).
 
 In this document I am assuming you'll be using an AWS Cloud9 environment. If nevertheless you are running this in another environemnt I'll assume you know what you are doing and will be able to adapt the commands as needed.
 
@@ -102,7 +102,7 @@ To build the `goagent` run:
 
 ```bash
 git clone https://github.com/aws-samples/aws-iot-jobs-full-system-update
-cd files
+cd aws-iot-jobs-full-system-update/files
 env GOOS=linux GOARCH=arm GOARM=7 go build ../goagent.go 
 ```
 
