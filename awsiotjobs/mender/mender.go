@@ -4,11 +4,11 @@ import (
 	"encoding/json"
 	"fmt"
 	"log"
-	"mendercmd"
 	"os/exec"
 	"time"
 
-	"../../awsiotjobs"
+	"github.com/aws-samples/aws-iot-jobs-full-system-update/goagent/awsiotjobs"
+	"github.com/aws-samples/aws-iot-jobs-full-system-update/goagent/mendercmd"
 )
 
 var timeout = 10 * time.Minute

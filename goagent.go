@@ -5,8 +5,8 @@ import (
 	"fmt"
 	"sync"
 
-	"./awsiotjobs"
-	"./awsiotjobs/mender"
+	"github.com/aws-samples/aws-iot-jobs-full-system-update/goagent/awsiotjobs"
+	"github.com/aws-samples/aws-iot-jobs-full-system-update/goagent/awsiotjobs/mender"
 )
 
 func main() {
