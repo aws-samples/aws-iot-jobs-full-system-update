@@ -6,7 +6,7 @@ import (
 	"testing"
 	"time"
 
-	"../../awsiotjobs"
+	"github.com/aws-samples/aws-iot-jobs-full-system-update/goagent/awsiotjobs"
 	"github.com/stretchr/testify/mock"
 )
 
