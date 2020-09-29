@@ -114,6 +114,7 @@ cd ~/environment
 git clone https://github.com/aws-samples/aws-iot-jobs-full-system-update
 cd aws-iot-jobs-full-system-update/files
 env GOOS=linux GOARCH=arm GOARM=7 go build ../goagent.go 
+mkdir -p overlay_root_fs/usr/sbin
 install -m 755 goagent overlay_root_fs/usr/sbin/goagent
 ```
 
@@ -173,7 +174,7 @@ Select the **Manage | Things** menu, click on the thing you just created (eg "rp
 
 ### Transfer the certificates
 
-Back in the Cloud9 instance, select the `mender-convert/files/overlay_root_fs/etc/goagent` folder in the navigation pane on the left. Then, select **File** in the top menu bar and **Upload local files...**. Select the certificate and private key you downloaded before or drag&drop them on the dialog box. 
+Back in the Cloud9 instance, select the `aws-iot-jobs-full-system-update/files/overlay_root_fs/etc/goagent` folder in the navigation pane on the left. Then, select **File** in the top menu bar and **Upload local files...**. Select the certificate and private key you downloaded before or drag&drop them on the dialog box. 
 
 Close the dialog box.
 
@@ -182,13 +183,13 @@ Using the file explorer or the terminal, rename the files to `cert.pem` and `pri
 For the mutual TLS authentication to work we also need the server certificate. Run the following command in the terminal window to save the server certificate locally.
 
 ```bash
-cd ~/environment/mender-convert/files/overlay_root_fs/etc/goagent
+cd ~/environment/aws-iot-jobs-full-system-update/files/overlay_root_fs/etc/goagent
 curl -o rootCA.pem https://www.amazontrust.com/repository/AmazonRootCA1.pem
 ```
 
 ### Update the goagent configuration file
 
-`goagent` uses a configuration file to get the parameters needed to connect to AWS IoT. The file can be found in the `mender-convert/files/overlay_root_fs/etc/goagent` folder.
+`goagent` uses a configuration file to get the parameters needed to connect to AWS IoT. The file can be found in the `aws-iot-jobs-full-system-update/files/overlay_root_fs/etc/goagent` folder.
 
 Open the file in the Cloud9 editor and provide the following information:
 
@@ -204,12 +205,13 @@ Now we have all the necessary bits and pieces to build the image.
 Run the following to generate the image and the mender artifact
 
 ```bash
-chown -R root.root ~/environment/aws-iot-jobs-full-system-update/files/overlay_root_fs
 cd ~/environment/mender-convert
+sudo cp -R ~/environment/aws-iot-jobs-full-system-update/files/overlay_root_fs overlay_root_fs
+sudo chown -R root.root overlay_root_fs
 MENDER_ARTIFACT_NAME=release-1 MENDER_ENABLE_SYSTEMD=n ./docker-mender-convert \
-    --disk-image input/raspbian_lite-2019-04-09/2019-04-08-raspbian-stretch-lite.img \
+    --disk-image input/2019-04-08-raspbian-stretch-lite.img \
     --config configs/raspberrypi3_config \
-    --overlay ../aws-iot-jobs-full-system-update/files/overlay_root_fs
+    --overlay ./overlay_root_fs
 ```
 
 > NOTE: `MENDER_ENABLE_SYSTEMD=n` disables `mender-client` service as we want to use the client in standalone mode.
