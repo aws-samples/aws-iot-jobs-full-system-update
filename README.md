@@ -92,13 +92,13 @@ sudo ./resize.sh
 `mender-convert` is a tool provided by the mender.io project. 
 You can read more about mender convert tool [here](https://github.com/mendersoftware/mender-convert), and you can get an overview on how to use it by following this [blog post](https://hub.mender.io/t/raspberry-pi-3-model-b-b-raspbian/140). 
 
-This project has been built for v1.2.2.
+This project has been built for v2.2.0.
 
 To install mender do the following:
 
 ```bash
 cd ~/environment
-git clone -b 1.2.2 https://github.com/mendersoftware/mender-convert.git
+git clone -b 2.2.0 https://github.com/mendersoftware/mender-convert.git
 cd mender-convert
 ./docker-build
 ```
@@ -114,15 +114,7 @@ cd ~/environment
 git clone https://github.com/aws-samples/aws-iot-jobs-full-system-update
 cd aws-iot-jobs-full-system-update/files
 env GOOS=linux GOARCH=arm GOARM=7 go build ../goagent.go 
-```
-
-### Copy configuration files
-
-You need to copy some additional files to the `mender-convert/files` directory which are needed in order to build the image.
-
-```bash
-cd ~/environment/mender-convert/files
-cp ~/environment/aws-iot-jobs-full-system-update/files/* .
+install -m 755 goagent overlay_root_fs/usr/sbin/goagent
 ```
 
 ### Raspbian
@@ -137,22 +129,9 @@ wget http://downloads.raspberrypi.org/raspbian_lite/images/raspbian_lite-2019-04
 unzip raspbian_lite-2019-04-09/2019-04-08-raspbian-stretch-lite.zip
 ```
 
-### Patching `mender-convert`
+### Modify the Wifi configuration
 
-While in the `mender-convert` folder run the following command to patch the build scripts in order to get the Job Agent and the client certificates on the image.
-
-```bash
-cd ~/environment/mender-convert
-patch -b -z .bak rpi-convert-stage-5.sh ./files/patch.txt
-```
-
-The patch is adding the following to the standard mender script:
-* copy the goagent file into `/usr/sbin`
-* creates the `/etc/goagent` folder
-* copies the root CA, device certificate and private key into the `/etc/goagent` folder
-* installs a systemd service file to start the `goagent` on boot
-* enable the ssh service in order to connect
-* installs a `wpa_supplicant.conf` file into `/etc/wpa_supplicant/` to connect to a wireless network in case an Ethernet cable connection is not available
+Open `files/overlay_root_fs/etc/wpa_supplicant/wpa_supplicant.conf` and provide the values for `<SSID>` and `<SECRET>`.
 
 
 ### Enable the connection to AWS IoT
@@ -194,7 +173,7 @@ Select the **Manage | Things** menu, click on the thing you just created (eg "rp
 
 ### Transfer the certificates
 
-Back in the Cloud9 instance, select the `mender-convert/files` folder in the navigation pane on the left. Then, select **File** in the top menu bar and **Upload local files...**. Select the certificate and private key you downloaded before or drag&drop them on the dialog box. 
+Back in the Cloud9 instance, select the `mender-convert/files/overlay_root_fs/etc/goagent` folder in the navigation pane on the left. Then, select **File** in the top menu bar and **Upload local files...**. Select the certificate and private key you downloaded before or drag&drop them on the dialog box. 
 
 Close the dialog box.
 
@@ -203,13 +182,13 @@ Using the file explorer or the terminal, rename the files to `cert.pem` and `pri
 For the mutual TLS authentication to work we also need the server certificate. Run the following command in the terminal window to save the server certificate locally.
 
 ```bash
-cd ~/environment/mender-convert/files
+cd ~/environment/mender-convert/files/overlay_root_fs/etc/goagent
 curl -o rootCA.pem https://www.amazontrust.com/repository/AmazonRootCA1.pem
 ```
 
 ### Update the goagent configuration file
 
-`goagent` uses a configuration file to get the parameters needed to connect to AWS IoT. The file can be found in the `mender-convert/files` folder.
+`goagent` uses a configuration file to get the parameters needed to connect to AWS IoT. The file can be found in the `mender-convert/files/overlay_root_fs/etc/goagent` folder.
 
 Open the file in the Cloud9 editor and provide the following information:
 
@@ -225,17 +204,23 @@ Now we have all the necessary bits and pieces to build the image.
 Run the following to generate the image and the mender artifact
 
 ```bash
-chmod +x files/mender-env.sh
-./files/mender-env.sh 2019-04-08-raspbian-stretch-lite
+chown -R root.root ~/environment/aws-iot-jobs-full-system-update/files/overlay_root_fs
+cd ~/environment/mender-convert
+MENDER_ARTIFACT_NAME=release-1 MENDER_ENABLE_SYSTEMD=n ./docker-mender-convert \
+    --disk-image input/raspbian_lite-2019-04-09/2019-04-08-raspbian-stretch-lite.img \
+    --config configs/raspberrypi3_config \
+    --overlay ../aws-iot-jobs-full-system-update/files/overlay_root_fs
 ```
+
+> NOTE: `MENDER_ENABLE_SYSTEMD=n` disables `mender-client` service as we want to use the client in standalone mode.
 
 ### Transfer the image
 
-Once the above process is finished you'll endup with two relevant files in the `mender-convert/output` folder: 
-* an `sdimg` file - this is the full image that need to be transferred to the SD card 
+Once the above process is finished you'll endup with two relevant files in the `mender-convert/deploy` folder: 
+* an `img.gz` file - this is the full image that need to be transferred to the SD card 
 * a `mender` file - this is the mender artifact which is used by the mender client to upgrade the system
 
-The sdimg file must be transferred to your local machine and copied onto the SD card. To do this navigate to the `output` folder in the explorer tab on the left, right-click on the sdimg file and click on Download. Depending on your internet connection it might take some time.
+The img file must be transferred to your local machine and copied onto the SD card. To do this navigate to the `deploy` folder in the explorer tab on the left, right-click on the img file and click on Download. Depending on your internet connection it might take some time.
 
 The mender artifact needs to be copied to an S3 bucket where it can later be accessed by the mender client via a pre-signed URL. 
 
@@ -248,7 +233,7 @@ aws s3 mb s3://<bucket name>
 Once you have created the bucket, copy the mender file to it.
 
 ```bash
-aws s3 cp ~/environment/mender-convert/output/2019-04-08-raspbian-stretch-lite.mender s3://<bucket name>
+aws s3 cp ~/environment/mender-convert/deploy/2019-04-08-raspbian-stretch-lite-raspberrypi3-mender.mender s3://<bucket name>
 ```
 
 This bucket and the file are private and cannot be accessed by unauthorized parties.
