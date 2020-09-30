@@ -90,7 +90,7 @@ sudo ./resize.sh
 ### Install mender-convert
 
 `mender-convert` is a tool provided by the mender.io project. 
-You can read more about mender convert tool [here](https://github.com/mendersoftware/mender-convert), and you can get an overview on how to use it by following this [blog post](https://hub.mender.io/t/raspberry-pi-3-model-b-b-raspbian/140). 
+You can read more about mender convert tool https://github.com/mendersoftware/mender-convert, and you can get an overview on how to use it by following this blog post https://hub.mender.io/t/raspberry-pi-3-model-b-b-raspbian/140. 
 
 This project has been built for v2.2.0.
 
@@ -137,11 +137,11 @@ Open `files/overlay_root_fs/etc/wpa_supplicant/wpa_supplicant.conf` and provide 
 
 ### Enable the connection to AWS IoT
 
-The goagent connects to AWS IoT over MQTT in order to receive the commands sent by the AWS IoT Jobs service. MQTT connections are encrypted via TLS and secured via mutual TLS authentication. For this we need to have a private key and a device certificate to identify and authenticate the device. In a real production environment the private key would be generated in a secure way on the actual device and be accessible to the agent, for example using a secure element. The device certificate would then be obtained by issuing a CSR (certificate signing request) that would be signed by a CA recognized by AWS IoT. You can find an implementation of this process [here](https://github.com/aws-samples/iot-provisioning-secretfree)
+The goagent connects to AWS IoT over MQTT in order to receive the commands sent by the AWS IoT Jobs service. MQTT connections are encrypted via TLS and secured via mutual TLS authentication. For this we need to have a private key and a device certificate to identify and authenticate the device. In a real production environment the private key would be generated in a secure way on the actual device and be accessible to the agent, for example using a secure element. The device certificate would then be obtained by issuing a CSR (certificate signing request) that would be signed by a CA recognized by AWS IoT. You can find an implementation of this process in the following repo https://github.com/aws-samples/iot-provisioning-secretfree.
 
 For this demonstration, we are going to generate the private key and the certificate using the AWS IoT console and then transfer them to the image via the `mender-convert` tool. 
 
-* Go to the AWS IoT Console by clicking on this [link](https://console.aws.amazon.com/iot/home?#/create/provisioning)
+* Go to the [AWS IoT Console](https://console.aws.amazon.com/iot/home?#/create/provisioning)
 * Click on **Create a single thing**
 * Enter a Name, eg "rpi-mender-demo" and click **Next** at the bottom of the page
 * Click on **Create certificate**
@@ -218,7 +218,7 @@ MENDER_ARTIFACT_NAME=release-1 MENDER_ENABLE_SYSTEMD=n ./docker-mender-convert \
 
 ### Transfer the image
 
-Once the above process is finished you'll endup with two relevant files in the `mender-convert/deploy` folder: 
+Once the above process is finished you'll end up with two relevant files in the `mender-convert/deploy` folder: 
 * an `img.gz` file - this is the full image that need to be transferred to the SD card 
 * a `mender` file - this is the mender artifact which is used by the mender client to upgrade the system
 
