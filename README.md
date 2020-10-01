@@ -90,9 +90,18 @@ sudo ./resize.sh
 ### Install mender-convert
 
 `mender-convert` is a tool provided by the mender.io project. 
-You can read more about mender convert tool [here](https://github.com/mendersoftware/mender-convert), and you can get an overview on how to use it by following this [blog post](https://hub.mender.io/t/raspberry-pi-3-model-b-b-raspbian/140).
+You can read more about mender convert tool [here](https://github.com/mendersoftware/mender-convert), and you can get an overview on how to use it by following this [blog post](https://hub.mender.io/t/raspberry-pi-3-model-b-b-raspbian/140). 
 
-Use the `~/environment` folder as your working dir and follow the instruction in this [blog post](https://hub.mender.io/t/raspberry-pi-3-model-b-b-raspbian/140). Stop after you have built the docker image. 
+This project has been built for v1.2.2.
+
+To install mender do the following:
+
+```bash
+cd ~/environment
+git clone -b 1.2.2 https://github.com/mendersoftware/mender-convert.git
+cd mender-convert
+./docker-build
+```
 
 NOTE: if you get a warning about `Could not get lock...`, wait another 60sec os so. There are some background scripts finalizing the configuration of the AWS Cloud9 instance.
 
@@ -101,6 +110,7 @@ NOTE: if you get a warning about `Could not get lock...`, wait another 60sec os 
 To build the `goagent` run:
 
 ```bash
+cd ~/environment
 git clone https://github.com/aws-samples/aws-iot-jobs-full-system-update
 cd aws-iot-jobs-full-system-update/files
 env GOOS=linux GOARCH=arm GOARM=7 go build ../goagent.go 
