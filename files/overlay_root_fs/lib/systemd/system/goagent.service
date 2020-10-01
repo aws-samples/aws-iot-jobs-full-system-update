@@ -6,7 +6,7 @@ After=network.target systemd-timesyncd.service
 Type=simple
 User=root
 Group=root
-ExecStart=/usr/sbin/goagent -cacert /etc/goagent/rootCA.pem -key /etc/goagent/private.key -cert /etc/goagent/cert.pem -endpoint acwprzq1nws9h-ats.iot.eu-west-1.amazonaws.com -thingName mender_demo_rpi -clientId mender_demo_rpi
+ExecStart=/usr/sbin/goagent
 Restart=always
 RestartSec=5
 
