@@ -206,6 +206,7 @@ Run the following to generate the image and the mender artifact
 
 ```bash
 cd ~/environment/mender-convert
+rm -rf overlay_root_fs
 sudo cp -R ~/environment/aws-iot-jobs-full-system-update/files/overlay_root_fs overlay_root_fs
 sudo chown -R root.root overlay_root_fs
 MENDER_ARTIFACT_NAME=release-1 MENDER_ENABLE_SYSTEMD=n ./docker-mender-convert \
