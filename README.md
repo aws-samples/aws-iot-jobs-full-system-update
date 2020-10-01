@@ -111,7 +111,7 @@ To build the `goagent` run:
 
 ```bash
 cd ~/environment
-git clone https://github.com/aws-samples/aws-iot-jobs-full-system-update
+git clone -b mender-1.2 https://github.com/aws-samples/aws-iot-jobs-full-system-update
 cd aws-iot-jobs-full-system-update/files
 env GOOS=linux GOARCH=arm GOARM=7 go build ../goagent.go 
 ```
