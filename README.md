@@ -123,7 +123,7 @@ install -m 755 goagent overlay_root_fs/usr/sbin/goagent
 Download the Raspbian image and extract it:
 
 ```bash
-cd ..
+cd ~/environment/mender-convert
 mkdir -p input
 cd input
 wget http://downloads.raspberrypi.org/raspbian_lite/images/raspbian_lite-2019-04-09/2019-04-08-raspbian-stretch-lite.zip
