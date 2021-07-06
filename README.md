@@ -127,7 +127,7 @@ cd ~/environment/mender-convert
 mkdir -p input
 cd input
 wget http://downloads.raspberrypi.org/raspbian_lite/images/raspbian_lite-2019-04-09/2019-04-08-raspbian-stretch-lite.zip
-unzip raspbian_lite-2019-04-09/2019-04-08-raspbian-stretch-lite.zip
+unzip 2019-04-08-raspbian-stretch-lite.zip
 ```
 
 ### Modify the Wifi configuration
