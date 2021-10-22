@@ -45,24 +45,28 @@ func (j *JobExecutionMock) Publish(t string, q byte, p interface{}) {
 	j.Called()
 }
 
-func (j *JobExecutionMock) Success(s awsiotjobs.StatusDetails) {
+func (j *JobExecutionMock) Success(s awsiotjobs.StatusDetails) error {
 	j.On("Success").Return()
 	j.Called()
+	return nil
 }
 
-func (j *JobExecutionMock) InProgress(s awsiotjobs.StatusDetails) {
+func (j *JobExecutionMock) InProgress(s awsiotjobs.StatusDetails) error {
 	j.On("InProgress").Return()
 	j.Called()
+	return nil
 }
 
-func (j *JobExecutionMock) Fail(e awsiotjobs.JobError) {
+func (j *JobExecutionMock) Fail(e awsiotjobs.JobError) error {
 	j.On("Fail").Return()
 	j.Called()
+	return nil
 }
 
-func (j *JobExecutionMock) Reject(e awsiotjobs.JobError) {
+func (j *JobExecutionMock) Reject(e awsiotjobs.JobError) error {
 	j.On("Reject").Return()
 	j.Called()
+	return nil
 }
 
 func (j *JobExecutionMock) Terminate() {
